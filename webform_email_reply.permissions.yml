@@ -1,0 +1,6 @@
+'send email replies to all webforms':
+  title: 'View and send email replies to all webforms'
+  description: 'Allows user to view and send emails in reply to any webform. Generally an administrative permission.'
+'send email replies to own webforms':
+  title: 'View and send email replies to own webforms'
+  description: 'Allows user to view and send emails in reply to a webform the author has created. Generally an administrative permission.'

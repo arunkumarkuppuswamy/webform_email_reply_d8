@@ -1,0 +1,32 @@
+entity.webform_submission.webform_email_reply.form:
+  path: '/admin/structure/webform/manage/{webform}/submission/{webform_submission}/reply'
+  defaults:
+    _form: \Drupal\webform_email_reply\Form\WebformEmailReplyForm
+    _title_callback: '\Drupal\webform\Controller\WebformSubmissionViewController::title'
+  requirements:
+    _entity_access: 'webform_submission.update_any'
+    _custom_access: '\Drupal\webform_email_reply\Form\WebformEmailReplyForm::checkReplyAccess'
+
+entity.node.webform_submission.webform_email_reply.form:
+  path: '/node/{node}/webform/submission/{webform_submission}/reply'
+  defaults:
+    _form: \Drupal\webform_email_reply\Form\WebformEmailReplyForm
+    _title_callback: '\Drupal\webform\Controller\WebformSubmissionViewController::title'
+  options:
+    _admin_route: TRUE
+    parameters:
+      node:
+        type: 'entity:node'
+  requirements:
+    _entity_access: 'webform_submission.update_any'
+    _custom_access: '\Drupal\webform_email_reply\Form\WebformEmailReplyForm::checkReplyAccess'
+
+webform_email_reply.previous:
+  path: '/webform/{webform}/submission/{webform_submission}/reply/previous'
+  defaults:
+    _title: 'Previous replies to submission'
+    _controller: '\Drupal\webform_email_reply\Controller\DefaultController::webform_email_reply_previous'
+  options:
+    _admin_route: TRUE
+  requirements:
+    _custom_access: '\Drupal\webform_email_reply\Controller\DefaultController::checkReplyAccess'

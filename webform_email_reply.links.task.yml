@@ -1,0 +1,11 @@
+entity.node.webform_submission.webform_email_reply.form:
+  title: 'Reply'
+  route_name: entity.node.webform_submission.webform_email_reply.form
+  base_route: entity.node.webform_submission.canonical
+  weight: 35
+
+entity.webform_submission.webform_email_reply.form:
+  title: 'Reply'
+  route_name: entity.webform_submission.webform_email_reply.form
+  base_route: entity.webform_submission.canonical
+  weight: 35

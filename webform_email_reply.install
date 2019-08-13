@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * @file
+ * Webform email reply module schema hook.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function webform_email_reply_schema() {
+  $schema = [];
+
+  $schema['webform_email_reply'] = [
+    'description' => 'Holds information about emails sent in reply to submissions.',
+    'fields' => [
+      'eid' => [
+        'description' => 'The unique identifier for the email.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'sid' => [
+        'description' => 'The unique identifier for the submission.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'webform_id' => [
+        'description' => 'The node identifier of a webform.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ],
+      'uid' => [
+        'description' => 'The id of the user that replied to the submission',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'from_address' => [
+        'description' => 'The e-mail "from" e-mail address that will be used. This may be a string, the special key "default" or a numeric value. If a numeric value is used, the value of a component will be substituted on submission.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ],
+      'replied' => [
+        'description' => 'Timestamp of when the reply was sent',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'message' => [
+        'description' => 'The message text that was sent',
+        'type' => 'text',
+      ],
+      'fid' => [
+        'description' => 'File ID for email attachement',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['eid'],
+  ];
+  return $schema;
+}

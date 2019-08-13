@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * This module provides a way for users to reply to webform submissions within
+ * the CMS.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function webform_email_reply_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help.
+    case 'help.page.webform_email_reply':
+      $return_value = "<p>" . t("This module provides a way for users to reply to webform submissions within the CMS.") . '<br />';
+      $return_value .= t("Permissions can be set to allow users to reply to all webform submissions or only those on a node the user has created.") . '<p>';
+      $return_value .= "<p>" . t("All emails sent are stored in the database and can be viewed from the submission.") . '</p>';
+      return $return_value;
+  }
+}
+
+/**
+ * Function to insert the email into the database.
+ *
+ * @param array $data
+ *   The values to insert into the database.
+ */
+function webform_email_reply_insert(array $data) {
+  // Need the user replying to the submission.
+  $user = \Drupal::currentUser();
+
+  // Simple insert.
+  \Drupal::database()->insert('webform_email_reply')
+    ->fields([
+      'eid' => NULL,
+      'sid' => $data['sid'],
+      'webform_id' => $data['webform_id'],
+      'uid' => $user->id(),
+      'from_address' => $data['from_address'],
+      'replied' => time(),
+      'message' => $data['message'],
+      'fid' => $data['fid'],
+    ])
+    ->execute();
+}
+
+/**
+ * Check to see if a reply exists already for a submission.
+ *
+ * @param string $nid
+ *   The node id of the webform
+ * @param string $sid
+ *   The submission id
+ */
+function webform_email_reply_get_replies($webform_id, $sid) {
+  // Simple db query to get all the emails replies.
+  $previous_replies = \Drupal::database()->select('webform_email_reply', 'r')
+    ->fields('r')
+    ->condition('r.webform_id', $webform_id)
+    ->condition('r.sid', $sid)
+    ->execute()
+    ->fetchAll();
+  return $previous_replies;
+}
+
+/**
+ * Implements hook_mail().
+ *
+ * This function completes the email, allowing for placeholder substitution.
+ */
+function webform_email_reply_mail($key, &$message, $params) {
+  if (($key == 'webform_email_reply') || ($key == 'email')) {
+    if (isset($params['subject'])) {
+      $message['subject'] = $params['subject'];
+    }
+    if (isset($params['body'])) {
+      $message['body'][] = $params['body'];
+    }
+    if (isset($params['headers']) && is_array($params['headers'])) {
+      $message['headers'] += $params['headers'];
+    }
+    if (isset($params['from'])) {
+      $message['from'] = $params['from'];
+    }
+    if (isset($message['params'])) {
+      $message['params']['attachments'][] = $params['attachments'];
+    }
+  }
+}

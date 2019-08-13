@@ -1,0 +1,7 @@
+name: 'Webform Email Reply'
+description: 'A webform helper module that allows users to send an email reply to submissions'
+core: 8.x
+dependencies:
+  webform: 'drupal:webform'
+package: Webform
+type: module
