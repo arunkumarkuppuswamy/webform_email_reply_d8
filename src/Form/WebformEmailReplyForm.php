@@ -138,7 +138,6 @@ class WebformEmailReplyForm extends FormBase {
     $form['details']['email'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Email'),
-      '#default_value' => $default_to_email,
       '#description' => $this->t('The email address(es) to send to. Multiple emails should be separated by a comma, with no spaces.'),
       '#required' => TRUE,
     ];
@@ -226,7 +225,14 @@ class WebformEmailReplyForm extends FormBase {
       $file->setPermanent();
       $file->save();
       $data['fid'] = $file->id();
-      $params['attachments'][] = $file;
+
+      $params['attachments'][] = [
+        'filecontent' => file_get_contents($file->getFileUri()),
+        'filename' => $file->getFilename(),
+        'filemime' => $file->getMimeType(),
+        'filepath' => \Drupal::service('file_system')->realpath($file->getFileUri()),
+        '_uri' => file_create_url($file->getFileUri()),
+      ];
       $params['headers'] = [
         'MIME-Version' => '1.0',
         'Content-Type' => 'text/html; charset=UTF-8; format=flowed; delsp=yes',

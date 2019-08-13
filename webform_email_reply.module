@@ -73,20 +73,40 @@ function webform_email_reply_get_replies($webform_id, $sid) {
  */
 function webform_email_reply_mail($key, &$message, $params) {
   if (($key == 'webform_email_reply') || ($key == 'email')) {
+
+    // Set email subject.
     if (isset($params['subject'])) {
       $message['subject'] = $params['subject'];
     }
+
+    // Adding body.
     if (isset($params['body'])) {
       $message['body'][] = $params['body'];
     }
+
+    // Set other headers.
     if (isset($params['headers']) && is_array($params['headers'])) {
       $message['headers'] += $params['headers'];
     }
+
+    // Set from address.
     if (isset($params['from'])) {
       $message['from'] = $params['from'];
     }
-    if (isset($message['params'])) {
-      $message['params']['attachments'][] = $params['attachments'];
+
+    // Set Attachemnt.
+    if (isset($params['attachments'])) {
+      $message['params']['files'] = $params['attachments'];
     }
+
+    // Set header 'Reply-to'.
+    $reply_to = $params['reply_to'] ?: '';
+    if (empty($reply_to) && !empty($params['from'])) {
+      $reply_to = $message['from'];
+    }
+    if ($reply_to) {
+      $message['reply-to'] = $message['headers']['Reply-to'] = $reply_to;
+    }
+
   }
 }
